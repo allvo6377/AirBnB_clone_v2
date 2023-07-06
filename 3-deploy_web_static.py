@@ -7,7 +7,7 @@ and distributes an archive to your web servers, using the function deploy
 from fabric.api import env, local, put, run
 from datetime import datetime
 from os.path import exists, isdir
-env.hosts = ['54.237.45.220', '54.237.63.152']
+env.hosts = ['107.23.90.193', '3.89.155.59']
 
 
 def do_pack():
