@@ -1,22 +1,27 @@
 #!/usr/bin/python3
-# Fabfile to generates a .tgz archive from the contents of web_static.
-import os.path
+""" 0x03. AirBnB clone - Deploy static, task 1. Compress before sending
+"""
+from fabric.api import local, env
+from os import path, makedirs, listdir
 from datetime import datetime
-from fabric.api import local
 
 
 def do_pack():
-    """Create a tar gzipped archive of the directory web_static."""
-    dt = datetime.utcnow()
-    file = "versions/web_static_{}{}{}{}{}{}.tgz".format(dt.year,
-                                                         dt.month,
-                                                         dt.day,
-                                                         dt.hour,
-                                                         dt.minute,
-                                                         dt.second)
-    if os.path.isdir("versions") is False:
-        if local("mkdir -p versions").failed is True:
-            return None
-    if local("tar -cvzf {} web_static".format(file)).failed is True:
+    """ Generates a .tgz archive from the contents `web_static/` in AirBnB clone
+    repo.
+
+    Retruns:
+        (str): full path from current directory to `.tgz` archive created in
+    `versions/`, or `None` on failure
+    """
+    if not path.isdir("./versions"):
+        makedirs("./versions")
+
+    now = datetime.now().strftime('%Y%m%d%H%M%S')
+    local('tar -cvzf versions/web_static_{}.tgz web_static/'.format(now))
+
+    files = listdir("./versions")
+    paths = [path.join("./versions", base_name) for base_name in files]
+    if len(paths) == 0:
         return None
-    return file
+    return max(paths, key=path.getctime)
